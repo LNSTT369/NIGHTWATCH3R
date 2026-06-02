@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="2678" viewBox="0 0 1280 2678" role="img" aria-label="NIGHTWATCH3R portfolio">
-  <rect x="0" y="0" width="1280" height="2678" fill="#0A0A0B"></rect>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="2800" viewBox="0 0 1280 2800" role="img" aria-label="NIGHTWATCH3R portfolio">
+  <rect x="0" y="0" width="1280" height="2800" fill="#0A0A0B"></rect>
   <g>
     <defs>
       <radialGradient id="lr-primary" cx="1152" cy="21.424" r="921.6" fx="1152" fy="21.424" gradientUnits="userSpaceOnUse">
@@ -33,7 +33,61 @@
     </g>
     <text x="64" y="344" fill="#F5F5F5" font-family="'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="26">Zero-Trust Execution Rail &amp; Algorithmic PolicyGate.</text>
   </g>
-  <g>
+
+  <!-- FLOW DIAGRAM SECTION -->
+  <g transform="translate(64 450)">
+    <text x="0" y="-30" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">RESEARCH-TO-EXECUTION PIPELINE</text>
+    <rect x="0" y="-18" width="44" height="2" fill="#C5FF3F"></rect>
+
+    <!-- Nodes -->
+    <!-- Research Node -->
+    <g transform="translate(0 20)">
+      <rect x="0" y="0" width="220" height="100" rx="10" fill="#1A1A1C" stroke="#5A5E66" stroke-width="1"></rect>
+      <text x="110" y="45" fill="#F5F5F5" font-family="'Inter', sans-serif" font-size="20" font-weight="700" text-anchor="middle">RESEARCH</text>
+      <text x="110" y="70" fill="#888" font-family="'Inter', sans-serif" font-size="14" text-anchor="middle">QuantSpace / QCA</text>
+    </g>
+
+    <!-- Arrow 1 -->
+    <path d="M 220 70 L 300 70" stroke="#C5FF3F" stroke-width="2" fill="none" marker-end="url(#arrowhead)"></path>
+    <text x="260" y="60" fill="#C5FF3F" font-family="'JetBrains Mono', monospace" font-size="12" text-anchor="middle">Alpha Signal</text>
+
+    <!-- Alpha Socket Node -->
+    <g transform="translate(320 20)">
+      <rect x="0" y="0" width="220" height="100" rx="10" fill="#1A1A1C" stroke="#5A5E66" stroke-width="1"></rect>
+      <text x="110" y="45" fill="#F5F5F5" font-family="'Inter', sans-serif" font-size="18" font-weight="700" text-anchor="middle">ALPHA SOCKET</text>
+      <text x="110" y="70" fill="#888" font-family="'Inter', sans-serif" font-size="14" text-anchor="middle">Ingestion &amp; Valid</text>
+    </g>
+
+    <!-- Arrow 2 -->
+    <path d="M 540 70 L 620 70" stroke="#C5FF3F" stroke-width="2" fill="none" marker-end="url(#arrowhead)"></path>
+    <text x="580" y="60" fill="#C5FF3F" font-family="'JetBrains Mono', monospace" font-size="12" text-anchor="middle">HMAC Signed</text>
+
+    <!-- PolicyGate Node -->
+    <g transform="translate(640 20)">
+      <rect x="0" y="0" width="220" height="100" rx="10" fill="#1A1A1C" stroke="#C5FF3F" stroke-width="1.5"></rect>
+      <text x="110" y="45" fill="#C5FF3F" font-family="'Inter', sans-serif" font-size="20" font-weight="700" text-anchor="middle">POLICYGATE</text>
+      <text x="110" y="70" fill="#F5F5F5" font-family="'Inter', sans-serif" font-size="14" text-anchor="middle">Risk &amp; Regime Filter</text>
+    </g>
+
+    <!-- Arrow 3 -->
+    <path d="M 860 70 L 940 70" stroke="#C5FF3F" stroke-width="2" fill="none" marker-end="url(#arrowhead)"></path>
+    <text x="900" y="60" fill="#C5FF3F" font-family="'JetBrains Mono', monospace" font-size="12" text-anchor="middle">Approved</text>
+
+    <!-- Execution Node -->
+    <g transform="translate(960 20)">
+      <rect x="0" y="0" width="190" height="100" rx="10" fill="#1A1A1C" stroke="#5A5E66" stroke-width="1"></rect>
+      <text x="95" y="45" fill="#F5F5F5" font-family="'Inter', sans-serif" font-size="20" font-weight="700" text-anchor="middle">ALPACA</text>
+      <text x="95" y="70" fill="#888" font-family="'Inter', sans-serif" font-size="14" text-anchor="middle">Market Fill</text>
+    </g>
+
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#C5FF3F" />
+      </marker>
+    </defs>
+  </g>
+
+  <g transform="translate(0 150)">
     <g>
       <text x="64" y="578" fill="#F5F5F5" font-family="'Inter Display', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">INFRASTRUCTURE</text>
       <rect x="64" y="590" width="44" height="2" fill="#C5FF3F"></rect>
@@ -63,7 +117,7 @@
       </text>
     </g>
   </g>
-  <g>
+  <g transform="translate(0 150)">
     <g>
       <text x="64" y="938" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">RISK ENGINE</text>
       <rect x="64" y="950" width="44" height="2" fill="#C5FF3F"></rect>
@@ -93,7 +147,7 @@
       </text>
     </g>
   </g>
-  <g>
+  <g transform="translate(0 150)">
     <g>
       <text x="64" y="1530" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">INTEGRATIONS</text>
       <rect x="64" y="1542" width="44" height="2" fill="#C5FF3F"></rect>
@@ -106,7 +160,7 @@
       </text>
     </g>
   </g>
-  <g>
+  <g transform="translate(0 150)">
     <g>
       <text x="64" y="2490" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">TECHNOLOGY STACK</text>
       <rect x="64" y="2502" width="44" height="2" fill="#C5FF3F"></rect>
