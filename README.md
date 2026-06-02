@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./src/portal_assets/portfolio.svg" alt="NightWatcher Header" width="100%">
+  <img src="./src/portal_assets/hero.svg" alt="NIGHTWATCH3R Hero" width="100%">
 
   # NIGHTWATCH3R
 

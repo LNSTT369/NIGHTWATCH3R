@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="2678" viewBox="0 0 1280 2678" role="img" aria-label="NIGHTWATCH3R portfolio">
+  <rect x="0" y="0" width="1280" height="2678" fill="#0A0A0B"></rect>
+  <g>
+    <defs>
+      <radialGradient id="lr-primary" cx="1152" cy="21.424" r="921.6" fx="1152" fy="21.424" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.34"></stop>
+        <stop offset="18%" stop-color="#F7FAFF" stop-opacity="0.18"></stop>
+        <stop offset="45%" stop-color="#FFFFFF" stop-opacity="0.06"></stop>
+        <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"></stop>
+      </radialGradient>
+      <radialGradient id="lr-secondary" cx="230.4" cy="42.848" r="665.6" fx="230.4" fy="42.848" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.09"></stop>
+        <stop offset="65%" stop-color="#FFFFFF" stop-opacity="0.02"></stop>
+        <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"></stop>
+      </radialGradient>
+    </defs>
+    <rect x="0" y="0" width="1280" height="1071.2" fill="url(#lr-primary)"></rect>
+    <rect x="0" y="0" width="1280" height="1071.2" fill="url(#lr-secondary)"></rect>
+  </g>
+  <g>
+    <g>
+      <defs>
+        <linearGradient id="shiny-hero" x1="-40%" y1="0" x2="0%" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#F5F5F5" stop-opacity="1"></stop>
+          <stop offset="50%" stop-color="#FFFFFF" stop-opacity="1"></stop>
+          <stop offset="100%" stop-color="#F5F5F5" stop-opacity="1"></stop>
+          <animate attributeName="x1" from="-40%" to="140%" dur="3s" repeatCount="indefinite"></animate>
+          <animate attributeName="x2" from="0%" to="180%" dur="3s" repeatCount="indefinite"></animate>
+        </linearGradient>
+      </defs>
+      <text x="64" y="264" fill="url(#shiny-hero)" font-family="'Inter Display', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="140" font-weight="800" letter-spacing="-2">NIGHTWATCH3R</text>
+    </g>
+    <text x="64" y="344" fill="#F5F5F5" font-family="'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="26">Zero-Trust Execution Rail &amp; Algorithmic PolicyGate.</text>
+  </g>
+  <g>
+    <g>
+      <text x="64" y="578" fill="#F5F5F5" font-family="'Inter Display', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">INFRASTRUCTURE</text>
+      <rect x="64" y="590" width="44" height="2" fill="#C5FF3F"></rect>
+    </g>
+    <g>
+      <rect x="64" y="604" width="362.66" height="200" rx="14" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+      <text x="86" y="680" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="28" font-weight="700">Alpha Socket</text>
+      <text x="86" y="716" fill="#F5F5F5" font-family="'Inter', sans-serif" font-size="17" font-weight="400">
+        <tspan x="86" dy="0">Signal Ingestion API with</tspan>
+        <tspan x="86" dy="24">cryptographic validation.</tspan>
+      </text>
+    </g>
+    <g>
+      <rect x="458.66" y="604" width="362.66" height="200" rx="14" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+      <text x="480.66" y="680" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="28" font-weight="700">PolicyGate</text>
+      <text x="480.66" y="716" fill="#F5F5F5" font-family="'Inter', sans-serif" font-size="17" font-weight="400">
+        <tspan x="480.66" dy="0">Pre-execution risk filter</tspan>
+        <tspan x="480.66" dy="24">(Kelly, VaR, Regime).</tspan>
+      </text>
+    </g>
+    <g>
+      <rect x="853.33" y="604" width="362.66" height="200" rx="14" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+      <text x="875.33" y="680" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="28" font-weight="700">Reconciler</text>
+      <text x="875.33" y="716" fill="#F5F5F5" font-family="'Inter', sans-serif" font-size="17" font-weight="400">
+        <tspan x="875.33" dy="0">Durable Object 60s</tspan>
+        <tspan x="875.33" dy="24">broker-state alignment.</tspan>
+      </text>
+    </g>
+  </g>
+  <g>
+    <g>
+      <text x="64" y="938" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">RISK ENGINE</text>
+      <rect x="64" y="950" width="44" height="2" fill="#C5FF3F"></rect>
+    </g>
+    <g>
+      <rect x="64" y="964" width="362.66" height="200" rx="14" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+      <text x="86" y="1040" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="28" font-weight="700">Kelly Criterion</text>
+      <text x="86" y="1076" fill="#F5F5F5" font-family="'Inter', sans-serif" font-size="17" font-weight="400">
+        <tspan x="86" dy="0">Dynamic edge-based</tspan>
+        <tspan x="86" dy="24">capital allocation.</tspan>
+      </text>
+    </g>
+    <g>
+      <rect x="458.66" y="964" width="362.66" height="200" rx="14" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+      <text x="480.66" y="1040" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="28" font-weight="700">Value at Risk</text>
+      <text x="480.66" y="1076" fill="#F5F5F5" font-family="'Inter', sans-serif" font-size="17" font-weight="400">
+        <tspan x="480.66" dy="0">Monte Carlo portfolio</tspan>
+        <tspan x="480.66" dy="24">exposure modeling.</tspan>
+      </text>
+    </g>
+    <g>
+      <rect x="853.33" y="964" width="362.66" height="200" rx="14" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+      <text x="875.33" y="1040" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="28" font-weight="700">Regime Detect</text>
+      <text x="875.33" y="1076" fill="#F5F5F5" font-family="'Inter', sans-serif" font-size="17" font-weight="400">
+        <tspan x="875.33" dy="0">Volatility clustering &amp;</tspan>
+        <tspan x="875.33" dy="24">regime classification.</tspan>
+      </text>
+    </g>
+  </g>
+  <g>
+    <g>
+      <text x="64" y="1530" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">INTEGRATIONS</text>
+      <rect x="64" y="1542" width="44" height="2" fill="#C5FF3F"></rect>
+    </g>
+    <g>
+      <rect x="64" y="1556" width="1152" height="200" rx="14" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+      <text x="86" y="1632" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="28" font-weight="700">Quant Code Automata</text>
+      <text x="86" y="1668" fill="#F5F5F5" font-family="'Inter', sans-serif" font-size="17" font-weight="400">
+        <tspan x="86" dy="0">Direct pipeline from quantitative research papers to live Alpaca execution rails.</tspan>
+      </text>
+    </g>
+  </g>
+  <g>
+    <g>
+      <text x="64" y="2490" fill="#F5F5F5" font-family="'Inter Display', 'Inter', sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">TECHNOLOGY STACK</text>
+      <rect x="64" y="2502" width="44" height="2" fill="#C5FF3F"></rect>
+    </g>
+    <g>
+      <text x="64" y="2544" fill="#F5F5F5" font-family="'Inter', sans-serif" font-size="20" font-style="italic">Built for low-latency edge compute and high-integrity financial execution.</text>
+      <g transform="translate(64 2596)">
+        <rect x="0" y="0" width="176" height="44" rx="6" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+        <text x="88" y="28" fill="#F5F5F5" font-family="'JetBrains Mono', monospace" font-size="15" font-weight="600" text-anchor="middle">Cloudflare</text>
+        
+        <rect x="190" y="0" width="176" height="44" rx="6" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+        <text x="278" y="28" fill="#F5F5F5" font-family="'JetBrains Mono', monospace" font-size="15" font-weight="600" text-anchor="middle">D1 / SQL</text>
+
+        <rect x="380" y="0" width="176" height="44" rx="6" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+        <text x="468" y="28" fill="#F5F5F5" font-family="'JetBrains Mono', monospace" font-size="15" font-weight="600" text-anchor="middle">TypeScript</text>
+
+        <rect x="570" y="0" width="176" height="44" rx="6" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+        <text x="658" y="28" fill="#F5F5F5" font-family="'JetBrains Mono', monospace" font-size="15" font-weight="600" text-anchor="middle">Alpaca API</text>
+
+        <rect x="760" y="0" width="176" height="44" rx="6" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+        <text x="848" y="28" fill="#F5F5F5" font-family="'JetBrains Mono', monospace" font-size="15" font-weight="600" text-anchor="middle">MCP Server</text>
+
+        <rect x="950" y="0" width="176" height="44" rx="6" fill="none" stroke="#5A5E66" stroke-width="1"></rect>
+        <text x="1038" y="28" fill="#F5F5F5" font-family="'JetBrains Mono', monospace" font-size="15" font-weight="600" text-anchor="middle">QCA</text>
+      </g>
+    </g>
+  </g>
+</svg>
