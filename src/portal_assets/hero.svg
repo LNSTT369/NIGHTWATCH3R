@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="3000" viewBox="0 0 1280 3000" role="img" aria-label="NIGHTWATCH3R portfolio">
-  <rect x="0" y="0" width="1280" height="3000" fill="#0A0A0B"></rect>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1850" viewBox="0 0 1280 1850" role="img" aria-label="NIGHTWATCH3R portfolio">
+  <rect x="0" y="0" width="1280" height="1850" fill="#0A0A0B"></rect>
   <defs>
     <radialGradient id="lr-primary" cx="1152" cy="21.424" r="921.6" fx="1152" fy="21.424" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.34"></stop>
@@ -32,7 +32,7 @@
     <text x="64" y="344" fill="#F5F5F5" font-family="Inter, sans-serif" font-size="26">Zero-Trust Execution Rail &amp; Algorithmic PolicyGate.</text>
   </g>
 
-  <!-- RESEARCH-TO-EXECUTION FLOW (Absolute Positioning) -->
+  <!-- RESEARCH-TO-EXECUTION FLOW -->
   <g transform="translate(64 450)">
     <text x="0" y="0" fill="#F5F5F5" font-family="Inter, sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">RESEARCH-TO-EXECUTION PIPELINE</text>
     <rect x="0" y="10" width="44" height="2" fill="#C5FF3F"></rect>
@@ -82,7 +82,7 @@
   </g>
 
   <!-- INFRASTRUCTURE SECTION -->
-  <g transform="translate(64 750)">
+  <g transform="translate(64 700)">
     <text x="0" y="0" fill="#F5F5F5" font-family="Inter, sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">INFRASTRUCTURE</text>
     <rect x="0" y="10" width="44" height="2" fill="#C5FF3F"></rect>
     
@@ -115,7 +115,7 @@
   </g>
 
   <!-- RISK ENGINE SECTION -->
-  <g transform="translate(64 1050)">
+  <g transform="translate(64 970)">
     <text x="0" y="0" fill="#F5F5F5" font-family="Inter, sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">RISK ENGINE</text>
     <rect x="0" y="10" width="44" height="2" fill="#C5FF3F"></rect>
 
@@ -148,7 +148,7 @@
   </g>
 
   <!-- INTEGRATIONS SECTION -->
-  <g transform="translate(64 1350)">
+  <g transform="translate(64 1240)">
     <text x="0" y="0" fill="#F5F5F5" font-family="Inter, sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">INTEGRATIONS</text>
     <rect x="0" y="10" width="44" height="2" fill="#C5FF3F"></rect>
 
@@ -162,7 +162,7 @@
   </g>
 
   <!-- TECHNOLOGY STACK -->
-  <g transform="translate(64 1650)">
+  <g transform="translate(64 1460)">
     <text x="0" y="0" fill="#F5F5F5" font-family="Inter, sans-serif" font-size="18" font-weight="600" letter-spacing="1.5" text-transform="uppercase">TECHNOLOGY STACK</text>
     <rect x="0" y="10" width="44" height="2" fill="#C5FF3F"></rect>
     <text x="0" y="50" fill="#F5F5F5" font-family="Inter, sans-serif" font-size="20" font-style="italic">Built for low-latency edge compute and high-integrity financial execution.</text>
