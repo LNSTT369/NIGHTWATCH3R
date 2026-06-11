@@ -49,7 +49,7 @@ export async function handlePortalGet(request: Request, env: Env): Promise<Respo
         [encryptedKey, encryptedSecret, paperVal, row.key_id]
       );
       
-      return new Response(JSON.stringify({ ok: true, message: "Alpaca trading credentials configured and encrypted successfully." }), {
+      return new Response(JSON.stringify({ ok: true, message: "Alpaca trading credentials configured successfully." }), {
         status: 200,
         headers: { "Content-Type": "application/json" }
       });
@@ -62,1258 +62,644 @@ export async function handlePortalGet(request: Request, env: Env): Promise<Respo
     }
   }
 
-  const host = url.host;
-  const protocol = url.protocol === "https:" ? "https" : "http";
-  const wsProtocol = url.protocol === "https:" ? "wss" : "ws";
-
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NightWatcher V3 — Alpha Portal</title>
+  <title>NIGHTWATCHER V3 — SETUP</title>
   
-  <!-- Premium Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <style>
     :root {
-      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-      
-      /* Harmonious Dark Palette */
-      --bg: #0b0a09;
-      --bg-card: rgba(22, 20, 18, 0.7);
-      --border: rgba(184, 115, 24, 0.15);
-      --border-focus: rgba(184, 115, 24, 0.5);
-      
-      /* Vibrant Amber Accents */
-      --primary: #b87318;
-      --primary-glow: rgba(184, 115, 24, 0.4);
-      --text: #f5f4f0;
-      --text-muted: #a39f93;
-      
-      /* Status Colors */
+      --bg: #ffffff;
+      --text: #000000;
+      --border: #000000;
+      --muted: #666666;
       --success: #10b981;
-      --error: #f43f5e;
-      --warning: #f59e0b;
-      --info: #3b82f6;
+      --error: #dc2626;
+      --warning: #d97706;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg);
+      background-color: #f5f5f5;
       color: var(--text);
-      font-family: var(--font-sans);
+      font-family: var(--font-mono);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
+      align-items: center;
+      padding: 4rem 2rem;
+    }
+
+    .setup-frame {
+      width: 100%;
+      max-width: 750px;
+      border: 4px solid var(--border);
+      padding: 2.5rem;
+      background: white;
+      box-shadow: 12px 12px 0px rgba(0,0,0,0.1);
       position: relative;
     }
 
-    /* Ambient Background Glows */
-    body::before, body::after {
-      content: '';
-      position: absolute;
-      width: 50vw;
-      height: 50vw;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--primary-glow) 0%, rgba(11, 10, 9, 0) 70%);
-      filter: blur(80px);
-      z-index: -1;
-      opacity: 0.5;
-      pointer-events: none;
-    }
-    body::before {
-      top: -20vw;
-      right: -10vw;
-    }
-    body::after {
-      bottom: -20vw;
-      left: -10vw;
-    }
-
-    /* Outer Wrapper */
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem;
-      width: 100%;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    /* Header Panel */
-    header {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.5rem 2rem;
-      backdrop-filter: blur(16px);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-    }
-
-    .brand {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .brand h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #fff 40%, var(--primary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .brand p {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-    }
-
-    /* API Key Config Box */
-    .auth-box {
+    .setup-header {
       display: flex;
       align-items: center;
       gap: 1rem;
-      flex-wrap: wrap;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 1.4rem;
+      margin-bottom: 2.5rem;
     }
 
-    .input-group {
-      position: relative;
+    .header-dots {
+      flex-grow: 1;
+      border-bottom: 4px dotted #ccc;
+      height: 0.8rem;
+    }
+
+    .step-container { display: none; flex-direction: column; gap: 2rem; }
+    .step-container.active { display: flex; }
+
+    h2 { font-size: 2.8rem; text-align: center; margin-top: 1rem; font-weight: 700; letter-spacing: -1px; }
+    .subtitle { text-align: center; font-size: 1.2rem; color: #000; font-weight: 500; margin-top: -1rem; }
+    .muted-text { text-align: center; color: #888; font-size: 0.9rem; margin-top: -1rem; }
+
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 1.5rem; margin: 2rem 0; }
+    .feature-item { display: flex; gap: 1.5rem; align-items: flex-start; font-size: 1.05rem; line-height: 1.5; font-weight: 500; }
+    .feature-number { color: var(--success); font-weight: bold; min-width: 25px; }
+
+    .disclaimer-title { font-size: 2.2rem; color: var(--warning); text-align: center; margin-bottom: 0.5rem; font-weight: 500; }
+    .disclaimer-box {
+      border: 1px solid #000;
+      padding: 1.5rem;
+      max-height: 350px;
+      overflow-y: auto;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .disclaimer-box b { color: #000; }
+    .disclaimer-box li { margin-bottom: 0.8rem; position: relative; padding-left: 1.5rem; list-style: none; }
+    .disclaimer-box li::before { content: '•'; position: absolute; left: 0; color: #000; font-weight: bold; }
+
+    .checkbox-container {
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+    .custom-checkbox {
+      width: 32px;
+      height: 32px;
+      border: 4px solid var(--border);
+      flex-shrink: 0;
       display: flex;
       align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.5rem;
     }
+    #agreeDisclaimer:checked + .custom-checkbox::after { content: 'X'; position: absolute; }
 
-    .input-field {
-      background: rgba(11, 10, 9, 0.8);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.6rem 1rem;
-      color: var(--text);
-      font-family: var(--font-mono);
-      font-size: 0.9rem;
-      width: 280px;
-      transition: all 0.2s ease;
-    }
-
-    .input-field:focus {
-      border-color: var(--border-focus);
-      box-shadow: 0 0 12px var(--primary-glow);
-      outline: none;
-    }
+    .form-group { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.8rem; }
+    .form-label { font-weight: bold; text-transform: uppercase; font-size: 1rem; }
+    .form-input { border: 3px solid var(--border); padding: 1rem; font-family: var(--font-mono); font-size: 1.1rem; width: 100%; outline: none; }
+    .form-input:focus { background: #fafafa; }
 
     .btn {
-      background: var(--primary);
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      cursor: pointer;
-      font-family: var(--font-sans);
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 0.6rem 1.2rem;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn:hover {
-      background: #cf8420;
-      box-shadow: 0 0 15px var(--primary-glow);
-      transform: translateY(-1px);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn-secondary {
-      background: rgba(22, 20, 18, 0.8);
-      border: 1px solid var(--border);
+      border: 4px solid var(--border);
+      background: #fff;
       color: var(--text);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(184, 115, 24, 0.1);
-      border-color: var(--primary);
-      color: #fff;
-    }
-
-    /* Grid Layout */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 2rem;
-      flex-grow: 1;
-    }
-
-    @media (max-width: 1024px) {
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Panels */
-    .panel {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      backdrop-filter: blur(16px);
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      position: relative;
-    }
-
-    .panel-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(184, 115, 24, 0.1);
-      padding-bottom: 0.8rem;
-    }
-
-    .panel-title .badge {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      padding: 0.25rem 0.6rem;
-      border-radius: 4px;
-      background: rgba(184, 115, 24, 0.1);
-      color: var(--primary);
-      border: 1px solid rgba(184, 115, 24, 0.2);
-    }
-
-    /* Interactive Form Inputs */
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .form-group.full-width {
-      grid-column: span 2;
-    }
-
-    .form-label {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .form-input, select, textarea {
-      background: rgba(11, 10, 9, 0.8);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      color: var(--text);
-      font-family: var(--font-sans);
-      font-size: 0.95rem;
-      transition: all 0.2s ease;
-      width: 100%;
-    }
-
-    .form-input:focus, select:focus, textarea:focus {
-      border-color: var(--border-focus);
-      box-shadow: 0 0 12px var(--primary-glow);
-      outline: none;
-    }
-
-    .form-input-mono {
-      font-family: var(--font-mono);
-    }
-
-    /* Slider styling */
-    .slider-container {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .slider-val {
-      font-family: var(--font-mono);
-      font-weight: 700;
-      color: var(--primary);
-      width: 50px;
-      text-align: right;
-      font-size: 1.1rem;
-    }
-
-    input[type=range] {
-      -webkit-appearance: none;
-      width: 100%;
-      background: transparent;
-    }
-
-    input[type=range]:focus {
-      outline: none;
-    }
-
-    input[type=range]::-webkit-slider-runnable-track {
-      width: 100%;
-      height: 6px;
-      cursor: pointer;
-      background: rgba(184, 115, 24, 0.2);
-      border-radius: 3px;
-    }
-
-    input[type=range]::-webkit-slider-thumb {
-      height: 18px;
-      width: 18px;
-      border-radius: 50%;
-      background: var(--primary);
-      cursor: pointer;
-      -webkit-appearance: none;
-      margin-top: -6px;
-      box-shadow: 0 0 8px var(--primary-glow);
-    }
-
-    /* Tabs Panel */
-    .tabs-header {
-      display: flex;
-      background: rgba(11, 10, 9, 0.8);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .tab-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 0.6rem 0.8rem;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      transition: all 0.2s ease;
-      text-align: center;
-    }
-
-    .tab-btn:hover {
-      color: var(--text);
-      background: rgba(184, 115, 24, 0.05);
-    }
-
-    .tab-btn.active {
-      background: rgba(184, 115, 24, 0.15);
-      color: var(--primary);
-      font-weight: 600;
-    }
-
-    .tab-content {
-      display: none;
-      flex-grow: 1;
-    }
-
-    .tab-content.active {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .code-wrapper {
-      position: relative;
-      flex-grow: 1;
-    }
-
-    pre {
-      background: rgba(11, 10, 9, 0.9);
-      border: 1px solid var(--border);
-      border-radius: 8px;
       padding: 1.2rem;
-      overflow-x: auto;
       font-family: var(--font-mono);
-      font-size: 0.85rem;
-      line-height: 1.5;
-      color: #ebd3be;
-      max-height: 250px;
-    }
-
-    .copy-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: rgba(22, 20, 18, 0.8);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--text-muted);
+      font-weight: bold;
+      font-size: 1.3rem;
+      text-transform: uppercase;
       cursor: pointer;
-      font-size: 0.75rem;
-      padding: 0.3rem 0.6rem;
-      transition: all 0.2s ease;
-    }
-
-    .copy-btn:hover {
-      color: #fff;
-      border-color: var(--primary);
-      background: var(--primary);
-    }
-
-    /* Live Feed / Console */
-    .console {
-      background: rgba(11, 10, 9, 0.9);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      overflow-y: auto;
-      flex-grow: 1;
-      height: 200px;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      scroll-behavior: smooth;
-    }
-
-    .console-line {
-      display: flex;
-      gap: 0.8rem;
-      line-height: 1.4;
-      animation: fadeIn 0.3s ease forwards;
-    }
-
-    .console-time {
-      color: var(--text-muted);
-      flex-shrink: 0;
-    }
-
-    .console-msg {
-      word-break: break-all;
-    }
-
-    .console-success { color: var(--success); }
-    .console-error { color: var(--error); }
-    .console-warning { color: var(--warning); }
-    .console-info { color: var(--info); }
-
-    /* Footer styling */
-    footer {
       text-align: center;
-      padding: 2rem;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      border-top: 1px solid rgba(184, 115, 24, 0.05);
-      margin-top: 2rem;
     }
+    .btn:hover { background: #000; color: #fff; }
+    .btn:disabled { color: #bbb; border-color: #eee; cursor: not-allowed; }
+    .btn-row { display: grid; grid-template-columns: 1fr 1.5fr; gap: 1rem; margin-top: 1rem; border-top: 1px solid #eee; padding-top: 2rem; }
 
-    footer a {
-      color: var(--primary);
-      text-decoration: none;
-    }
+    /* DASHBOARD */
+    .dashboard-container { display: none; width: 100%; max-width: 1300px; gap: 2rem; }
+    .dashboard-container.active { display: flex; }
+    .panel { border: 4px solid var(--border); padding: 2rem; background: white; box-shadow: 8px 8px 0px rgba(0,0,0,0.05); }
+    .panel-header { font-weight: bold; text-transform: uppercase; border-bottom: 3px solid var(--border); padding-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .badge { font-size: 0.85rem; padding: 0.3rem 0.7rem; border: 2px solid var(--border); font-weight: bold; }
+    .score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin: 1rem 0; }
+    .score-box { border: 2px solid var(--border); padding: 1.5rem; text-align: center; }
+    .console { background: #000; color: #0f0; padding: 1.2rem; font-size: 0.9rem; height: 350px; overflow-y: auto; border: 4px solid var(--border); line-height: 1.4; }
+    
+    footer { margin-top: 4rem; font-size: 0.8rem; font-weight: bold; color: #888; text-align: center; letter-spacing: 1px; }
 
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Toast Notification */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: rgba(22, 20, 18, 0.95);
-      border: 1px solid var(--primary);
-      border-radius: 8px;
-      padding: 1rem 1.5rem;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 12px var(--primary-glow);
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      z-index: 100;
-      transform: translateY(120%);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      backdrop-filter: blur(8px);
-    }
-
-    .toast.show {
-      transform: translateY(0);
-    }
-
-    .toast-icon {
-      font-size: 1.2rem;
-    }
-
-    .toast-success { border-color: var(--success); }
-    .toast-success .toast-icon { color: var(--success); }
-    .toast-error { border-color: var(--error); }
-    .toast-error .toast-icon { color: var(--error); }
+    @media (max-width: 1000px) { .dashboard-container { flex-direction: column; } }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    
-    <!-- Top Bar -->
-    <header>
-      <div class="brand">
-        <h1>NightWatcher V3 — Alpha Socket</h1>
-        <p>Execution layer portal // secure signal onboarding</p>
-      </div>
-      <div class="auth-box">
-        <div class="input-group">
-          <input type="password" id="apiKeyField" class="input-field" placeholder="Enter SIGNAL_API_KEY..." autocomplete="off">
-        </div>
-        <button id="saveKeyBtn" class="btn">Configure Key</button>
-        <button id="shareLinkBtn" class="btn btn-secondary" title="Copy shareable link preloaded with key">Share URL</button>
-      </div>
-    </header>
-
-    <div class="dashboard-grid">
-      
-      <!-- Left Column: Setup & Form -->
-      <div style="display: flex; flex-direction: column; gap: 2rem;">
-        
-        <!-- Collapsible Drawer: Execution Backend Setup -->
-        <section class="panel">
-          <div class="panel-title" style="cursor: pointer;" onclick="toggleDrawer('backendSetupDrawer')">
-            <span style="display: flex; align-items: center; gap: 0.5rem;">
-              <span>⚙</span> Execution Backend Setup (Alpaca Integration)
-            </span>
-            <span id="setupToggleIcon" style="font-family: var(--font-mono); font-size: 0.9rem;">[+] Expand</span>
-          </div>
-          
-          <div id="backendSetupDrawer" style="display: none; flex-direction: column; gap: 1.2rem; margin-top: 1rem; border-top: 1px solid rgba(184, 115, 24, 0.1); padding-top: 1rem;">
-            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
-              Hot-swap trading credentials in-memory. Your credentials will be securely encrypted with AES-GCM (using 'KILL_SWITCH_SECRET' as salt) and stored in your isolated database tenancy.
-            </p>
-            
-            <form id="credentialsForm" style="display: flex; flex-direction: column; gap: 1rem;">
-              <div class="form-group">
-                <label class="form-label">Alpaca API Key ID</label>
-                <input type="text" id="alpaca_api_key" class="form-input form-input-mono" placeholder="AKXXXXXXXXXXXXXXXXXX" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Alpaca Secret Key</label>
-                <input type="password" id="alpaca_api_secret" class="form-input form-input-mono" placeholder="Enter your Alpaca Secret Key..." required>
-              </div>
-              <div class="form-group" style="flex-direction: row; align-items: center; gap: 0.8rem;">
-                <label class="form-label" style="margin: 0; cursor: pointer;">
-                  <input type="checkbox" id="alpaca_paper" checked style="width: auto; margin-right: 0.4rem; vertical-align: middle;">
-                  Use Paper Trading Environment (Default)
-                </label>
-              </div>
-              <button type="submit" class="btn" style="width: 100%; justify-content: center; padding: 0.7rem;">
-                Encrypt & Update Backend Credentials
-              </button>
-            </form>
-          </div>
-        </section>
-
-        <!-- Inject Alpha Signal Form -->
-        <section class="panel">
-          <div class="panel-title">
-            <span>Inject Alpha Signal</span>
-            <span class="badge">POST /api/signal</span>
-          </div>
-          
-          <form id="signalForm" class="form-grid">
-            
-            <div class="form-group">
-              <label class="form-label">Symbol</label>
-              <input type="text" id="symbol" class="form-input form-input-mono" placeholder="AAPL, TSLA, BTC..." required uppercase max="10">
-            </div>
-            
-            <div class="form-group">
-              <label class="form-label">Asset Class</label>
-              <select id="asset_class">
-                <option value="equity" selected>Equity (Stock)</option>
-                <option value="option">Option (OCC Symbol)</option>
-                <option value="future">Future (e.g. ES)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Direction</label>
-              <select id="direction">
-                <option value="long" selected>LONG (Buy / Bullish)</option>
-                <option value="short">SHORT (Sell / Bearish)</option>
-                <option value="neutral">NEUTRAL (Flat / Range)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Urgency / TTL</label>
-              <select id="urgency">
-                <option value="immediate">IMMEDIATE (60s TTL - fast decay)</option>
-                <option value="session" selected>SESSION (1h TTL - intraday)</option>
-                <option value="swing">SWING (24h TTL - multiday)</option>
-              </select>
-            </div>
-
-            <div class="form-group full-width">
-              <label class="form-label">Confidence</label>
-              <div class="slider-container">
-                <input type="range" id="confidence" min="0" max="1" step="0.05" value="0.75">
-                <span id="confidenceVal" class="slider-val">0.75</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Horizon (Minutes)</label>
-              <input type="number" id="horizon" class="form-input" value="60" min="1" required>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Signal Source</label>
-              <select id="source">
-                <option value="external" selected>EXTERNAL (0.70 Weight)</option>
-                <option value="technical">TECHNICAL (0.60 Weight)</option>
-                <option value="llm">LLM RESEARCH (0.40 Weight)</option>
-                <option value="dark_pool">DARK POOL (0.90 Weight)</option>
-                <option value="l2_microstructure">L2 MICROSTRUCTURE (0.80 Weight)</option>
-                <option value="manual">MANUAL OVERRIDE (0.95 Weight)</option>
-              </select>
-            </div>
-
-            <div class="form-group full-width">
-              <label class="form-label">Rationale</label>
-              <textarea id="rationale" rows="2" placeholder="Describe the technical pattern or core thesis behind this trade signal..." required></textarea>
-            </div>
-
-            <div class="form-group full-width" style="margin-top: 0.5rem;">
-              <button type="submit" class="btn" style="width: 100%; justify-content: center; padding: 0.8rem;">
-                Transmit Alpha Signal
-              </button>
-            </div>
-            
-          </form>
-        </section>
-
-        <!-- QCA systematic literature validator scorecard -->
-        <section class="panel">
-          <div class="panel-title">
-            <span style="display: flex; align-items: center; gap: 0.5rem;">
-              <span>📊</span> QCA Systematic Literature Validator
-            </span>
-            <span class="badge">Validator active</span>
-          </div>
-          
-          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
-              Universal validator running Fama-French 3-factor rolling regressions and transaction-friction checks on dynamic strategy modules deployed by Quant Code Automata.
-            </p>
-            
-            <!-- Scoring Cards Grid -->
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-              <div style="background: rgba(22, 20, 18, 0.5); border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem; text-align: center;">
-                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Backtest Sharpe</div>
-                <div style="font-size: 1.25rem; font-weight: 700; color: var(--success); margin-top: 0.25rem;">1.03 <span style="font-size: 0.75rem; font-weight: 400; color: var(--text-muted);">gross</span></div>
-                <div style="font-size: 0.75rem; color: var(--error); margin-top: 0.1rem;">0.14 net of fees</div>
-              </div>
-              <div style="background: rgba(22, 20, 18, 0.5); border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem; text-align: center;">
-                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Friction Gate</div>
-                <div style="font-size: 1.25rem; font-weight: 700; color: var(--success); margin-top: 0.25rem;">PASSED</div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.1rem;">Slippage + fees applied</div>
-              </div>
-              <div style="background: rgba(22, 20, 18, 0.5); border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem; text-align: center;">
-                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Rolling Beta</div>
-                <div style="font-size: 1.25rem; font-weight: 700; color: var(--warning); margin-top: 0.25rem;">0.82</div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.1rem;">Max Cap: 0.85</div>
-              </div>
-            </div>
-
-            <!-- Fama-French Factor Loading Regression Chart concept -->
-            <div style="background: rgba(11, 10, 9, 0.8); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem;">
-              <div style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); display: flex; justify-content: space-between;">
-                <span>Factor Loading Regressions (Paper C)</span>
-                <span style="font-family: var(--font-mono); color: var(--primary);">rolling 30-day</span>
-              </div>
-              <div style="height: 120px; display: flex; align-items: flex-end; justify-content: space-around; padding-top: 1rem; border-left: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-                <!-- Bar 1: Market Beta -->
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 25%;">
-                  <div style="font-size: 0.75rem; font-family: var(--font-mono); font-weight: bold; color: var(--primary);">0.82</div>
-                  <div style="width: 32px; height: 75px; background: linear-gradient(0deg, var(--primary-glow) 0%, var(--primary) 100%); border-radius: 4px 4px 0 0; box-shadow: 0 0 10px var(--primary-glow);"></div>
-                  <div style="font-size: 0.75rem; font-weight: 600; color: var(--text);">Mkt Beta</div>
-                </div>
-                <!-- Bar 2: Size Tilt (SMB) -->
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 25%;">
-                  <div style="font-size: 0.75rem; font-family: var(--font-mono); font-weight: bold; color: var(--info);">-0.12</div>
-                  <div style="width: 32px; height: 11px; background: linear-gradient(0deg, rgba(59, 130, 246, 0.2) 0%, var(--info) 100%); border-radius: 4px 4px 0 0; box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);"></div>
-                  <div style="font-size: 0.75rem; font-weight: 600; color: var(--text);">Size (SMB)</div>
-                </div>
-                <!-- Bar 3: Value Tilt (HML) -->
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 25%;">
-                  <div style="font-size: 0.75rem; font-family: var(--font-mono); font-weight: bold; color: var(--success);">0.45</div>
-                  <div style="width: 32px; height: 41px; background: linear-gradient(0deg, rgba(16, 185, 129, 0.2) 0%, var(--success) 100%); border-radius: 4px 4px 0 0; box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);"></div>
-                  <div style="font-size: 0.75rem; font-weight: 600; color: var(--text);">Value (HML)</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- QCA Deployment Logs -->
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-              <span class="form-label">QCA deployment & execution logs</span>
-              <pre style="max-height: 120px; padding: 0.8rem; font-size: 0.8rem; line-height: 1.4;"><code id="qcaLogs">[2026-05-27 19:13:02] cloner: Pulling zip ball for qca-systematic-literature-review-reproduction--paper-c
-[2026-05-27 19:13:03] cloner: In-memory zip unpacked successfully. Found strategy.js
-[2026-05-27 19:13:04] sandbox: Dynamic V8 isolate sandbox compiled successfully
-[2026-05-27 19:13:04] validator: Running 30-day simulated transaction-friction backtest on S&P 100 assets
-[2026-05-27 19:13:05] validator: Net Sharpe = 0.67 (Sharpe >= 0.50). PASSED Policy Gate Friction Check!
-[2026-05-27 19:13:05] factor: Running Fama-French rolling regressions. Market Beta = 0.82, SMB = -0.12, HML = 0.45
-[2026-05-27 19:13:05] deployer: Strategy deployed successfully. Strategy ID: qca-paper-c-active</code></pre>
-            </div>
-          </div>
-        </section>
-
-      </div>
-
-      <!-- Right Column: Interactive Code & Logs -->
-      <div style="display: flex; flex-direction: column; gap: 2rem;">
-        
-        <!-- Interactive Code Generator -->
-        <section class="panel" style="flex-grow: 1;">
-          <div class="panel-title">
-            <span>External Code Snippet</span>
-            <span class="badge">API Reference</span>
-          </div>
-
-          <div class="tabs-header">
-            <button class="tab-btn active" onclick="switchTab('curl')">cURL</button>
-            <button class="tab-btn" onclick="switchTab('python')">Python</button>
-            <button class="tab-btn" onclick="switchTab('python-ws')">Py-WS</button>
-            <button class="tab-btn" onclick="switchTab('node')">Node.js</button>
-            <button class="tab-btn" onclick="switchTab('go')">Go</button>
-          </div>
-
-          <!-- cURL tab -->
-          <div id="curl-tab" class="tab-content active">
-            <div class="code-wrapper">
-              <button class="copy-btn" onclick="copyCode('curl-code')">Copy</button>
-              <pre><code id="curl-code">curl -X POST ${protocol}://${host}/api/signal \\
-  -H "Authorization: Bearer <span class="key-placeholder">&lt;API_KEY&gt;</span>" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "source": "external",
-    "symbol": "AAPL",
-    "direction": "long",
-    "confidence": 0.75,
-    "urgency": "session",
-    "horizon": 60,
-    "rationale": "Breakout above VWAP with volume confirmation"
-  }'</code></pre>
-            </div>
-          </div>
-
-          <!-- Python requests tab -->
-          <div id="python-tab" class="tab-content">
-            <div class="code-wrapper">
-              <button class="copy-btn" onclick="copyCode('python-code')">Copy</button>
-              <pre><code id="python-code">import requests
-
-url = "${protocol}://${host}/api/signal"
-headers = {
-    "Authorization": "Bearer <span class="key-placeholder">&lt;API_KEY&gt;</span>",
-    "Content-Type": "application/json"
-}
-payload = {
-    "source": "external",
-    "symbol": "AAPL",
-    "direction": "long",
-    "confidence": 0.75,
-    "urgency": "session",
-    "horizon": 60,
-    "rationale": "Breakout above VWAP with volume confirmation"
-}
-
-resp = requests.post(url, headers=headers, json=payload)
-print(resp.json())</code></pre>
-            </div>
-          </div>
-
-          <!-- Python WebSocket tab -->
-          <div id="python-ws-tab" class="tab-content">
-            <div class="code-wrapper">
-              <button class="copy-btn" onclick="copyCode('python-ws-code')">Copy</button>
-              <pre><code id="python-ws-code">import asyncio
-import websockets
-import json
-
-async def send_signal():
-    uri = "${wsProtocol}://${host}/stream"
-    headers = {"Authorization": "Bearer <span class="key-placeholder">&lt;API_KEY&gt;</span>"}
-    async with websockets.connect(uri, extra_headers=headers) as ws:
-        # Submit signal packet
-        await ws.send(json.dumps({
-            "type": "signal",
-            "payload": {
-                "source": "external",
-                "symbol": "AAPL",
-                "direction": "long",
-                "confidence": 0.75,
-                "urgency": "session",
-                "horizon": 60,
-                "rationale": "WebSocket test"
-            }
-        }))
-        print("Response:", await ws.recv())
-
-asyncio.run(send_signal())</code></pre>
-            </div>
-          </div>
-
-          <!-- Node fetch tab -->
-          <div id="node-tab" class="tab-content">
-            <div class="code-wrapper">
-              <button class="copy-btn" onclick="copyCode('node-code')">Copy</button>
-              <pre><code id="node-code">const res = await fetch("${protocol}://${host}/api/signal", {
-  method: "POST",
-  headers: {
-    "Authorization": "Bearer <span class="key-placeholder">&lt;API_KEY&gt;</span>",
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    source: "external",
-    symbol: "AAPL",
-    direction: "long",
-    confidence: 0.75,
-    urgency: "session",
-    horizon: 60,
-    rationale: "Breakout above VWAP with volume confirmation"
-  })
-});
-console.log(await res.json());</code></pre>
-            </div>
-          </div>
-
-          <!-- Go tab -->
-          <div id="go-tab" class="tab-content">
-            <div class="code-wrapper">
-              <button class="copy-btn" onclick="copyCode('go-code')">Copy</button>
-              <pre><code id="go-code">package main
-
-import (
-	"bytes"
-	"fmt"
-	"net/http"
-)
-
-func main() {
-	jsonPayload := []byte(\`{"source":"external","symbol":"AAPL","direction":"long","confidence":0.75,"urgency":"session","horizon":60,"rationale":"Breakout"}\`)
-	req, _ := http.NewRequest("POST", "${protocol}://${host}/api/signal", bytes.NewBuffer(jsonPayload))
-	req.Header.Set("Authorization", "Bearer <span class="key-placeholder">&lt;API_KEY&gt;</span>")
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, _ := client.Do(req)
-	defer resp.Body.Close()
-	fmt.Println("Response Status:", resp.Status)
-}</code></pre>
-            </div>
-          </div>
-
-        </section>
-
-        <!-- Live Signal Stream Activity Log -->
-        <section class="panel">
-          <div class="panel-title">
-            <span>Live Stream Socket</span>
-            <div style="display:flex; align-items:center; gap:0.5rem;">
-              <span id="socketIndicator" style="width:8px; height:8px; border-radius:50%; background:var(--error); box-shadow:0 0 6px var(--error);"></span>
-              <span id="socketStatus" style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">DISCONNECTED</span>
-            </div>
-          </div>
-          <div id="consoleFeed" class="console">
-            <div class="console-line console-info">
-              <span class="console-time">[PORTAL]</span>
-              <span class="console-msg">Portal ready. Enter your API key above to initialize live WebSocket stream.</span>
-            </div>
-          </div>
-        </section>
-
-      </div>
-
+  <!-- ONBOARDING -->
+  <div id="onboarding" class="setup-frame">
+    <div class="setup-header">
+      <span>NIGHTWATCHER SETUP</span>
+      <div class="header-dots"></div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-      NightWatcher V3. Built for millisecond-scale institutional smart order execution. View <a href="/health" target="_blank">Health Monitor</a>.
-    </footer>
+    <!-- STEP 1: INTRO -->
+    <div id="step-intro" class="step-container active">
+      <h2>NIGHTWATCHER V3</h2>
+      <p class="subtitle">Universal execution layer for autonomous trading</p>
+      <p class="muted-text">Any strategy · Any language · One signal call.</p>
+
+      <ul class="feature-list">
+        <li class="feature-item"><span class="feature-number">1.</span><span>Universal open API accepting signals via REST, WebSocket, or MCP</span></li>
+        <li class="feature-item"><span class="feature-number">2.</span><span>Deterministic pre-trade Policy Engine enforcing strict risk controls</span></li>
+        <li class="feature-item"><span class="feature-number">3.</span><span>Institutional-grade quantitative limits: Kelly sizing, portfolio VaR, & Pearson concentration clamps</span></li>
+        <li class="feature-item"><span class="feature-number">4.</span><span>Secure two-step HMAC-signed token approval with complete D1 audit logging</span></li>
+      </ul>
+
+      <button class="btn" onclick="nextStep('disclaimer')">GET STARTED</button>
+    </div>
+
+    <!-- STEP 2: DISCLAIMER -->
+    <div id="step-disclaimer" class="step-container">
+      <div class="disclaimer-title">Risk Disclaimer</div>
+      <p style="text-align: center; color: #666; margin-top: -1.5rem;">Please read carefully before proceeding</p>
+
+      <div class="disclaimer-box">
+        <p>This software is provided for <b>educational and informational purposes only</b>. Nothing in this software constitutes financial, investment, legal, or tax advice.</p>
+        <br>
+        <p><b>By using this software, you acknowledge and agree that:</b></p>
+        <ul>
+          <li>All trading and investment decisions are made <span style="color: var(--warning); font-weight: bold;">at your own risk</span></li>
+          <li>Markets are volatile and <span style="color: var(--error); font-weight: bold;">you can lose some or all of your capital</span></li>
+          <li>No guarantees of performance, profits, or outcomes are made</li>
+          <li>The authors, contributors, and maintainers are not responsible for any financial losses</li>
+          <li>You are solely responsible for your own trades and investment decisions</li>
+          <li>This software may contain bugs, errors, or behave unexpectedly</li>
+          <li>Past performance does not guarantee future results</li>
+        </ul>
+      </div>
+
+      <label class="checkbox-container">
+        <input type="checkbox" id="agreeDisclaimer" style="display:none;" onchange="toggleDisclaimerBtn()">
+        <div class="custom-checkbox"></div>
+        <span>I have read and understand the risks. I accept full responsibility for any losses that may occur from using this software.</span>
+      </label>
+
+      <button id="disclaimerBtn" class="btn" disabled style="margin-top: 1rem;" onclick="nextStep('auth')">I UNDERSTAND, CONTINUE</button>
+    </div>
+
+    <!-- STEP 3: DEVELOPER AUTH -->
+    <div id="step-auth" class="step-container">
+      <h2>AUTHENTICATION</h2>
+      <p class="subtitle">Secure your execution tenancy</p>
+
+      <div class="form-group">
+        <label class="form-label">Developer Key</label>
+        <input type="password" id="devKeyInput" class="form-input" placeholder="Paste your Developer Key (e.g. dev-key-hash-stub)...">
+        <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;">This key isolates your strategies and credentials in the D1 database.</p>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" style="border-width: 2px;" onclick="nextStep('disclaimer')">BACK</button>
+        <button class="btn" onclick="validateDevKey()">CONTINUE</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: CONFIGURATION -->
+    <div id="step-config" class="step-container">
+      <div class="setup-header" style="font-size: 1.1rem; margin-top: -1rem; border: none; margin-bottom: 0.5rem;">
+        <span>ALPACA TRADING ACCOUNT</span>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--muted); margin-bottom: 1.5rem;">Get your API keys from app.alpaca.markets</p>
+
+      <form id="setupForm">
+        <div class="form-group">
+          <label class="form-label">API KEY</label>
+          <input type="text" id="alpaca_api_key" class="form-input" placeholder="PK..." required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">API SECRET</label>
+          <input type="password" id="alpaca_api_secret" class="form-input" placeholder="Secret key..." required>
+        </div>
+
+        <label class="checkbox-container" style="margin-bottom: 1.5rem;">
+          <input type="checkbox" id="alpaca_paper" checked style="display:none;">
+          <div class="custom-checkbox"></div>
+          <span>PAPER TRADING MODE (RECOMMENDED FOR TESTING)</span>
+        </label>
+
+        <div class="form-group">
+          <label class="form-label">OPENAI API KEY (OPTIONAL)</label>
+          <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem;">Required for AI-powered analysis. Get from platform.openai.com</p>
+          <input type="password" id="openai_api_key" class="form-input" placeholder="sk-...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">STARTING EQUITY</label>
+          <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem;">Your account starting balance (for P&L tracking)</p>
+          <input type="number" id="starting_equity" class="form-input" value="100000">
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn" style="border-width: 2px;" onclick="nextStep('auth')">BACK</button>
+          <button type="submit" class="btn">SAVE & CONTINUE</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="dashboard-container">
+    
+    <!-- Left -->
+    <div style="flex: 1.3; display: flex; flex-direction: column; gap: 2rem;">
+      <div class="panel">
+        <div class="panel-header">
+          <span>ALPHA SOCKET // REPO INGESTION</span>
+          <span id="repoStatusBadge" class="badge">STATUS: IDLE</span>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label">GITHUB REPO URL</label>
+          <div style="display: flex; gap: 1rem;">
+            <input type="url" id="githubUrl" class="form-input" placeholder="https://github.com/owner/repo" required style="flex-grow: 1;">
+            <button type="button" id="analyzeBtn" class="btn" style="padding: 0.5rem 1.5rem; font-size: 1rem;">[ ANALYZE ]</button>
+            <button type="button" id="clearBtn" class="btn" style="padding: 0.5rem 1.5rem; font-size: 1rem;">[ CLEAR ]</button>
+          </div>
+        </div>
+        <div style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">
+          // paste research-to-code repos for policy-gated deployment
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 0.5rem; text-transform: uppercase;">PIPELINE LOG // EVENTS</div>
+          <div id="repoLogArea" style="height: 180px; overflow-y: scroll; border: 2px solid var(--border); padding: 1rem; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.4;">
+            <div style="color: #888;">-- NO ACTIVE REPO TASK --<br>// waiting for github url</div>
+          </div>
+        </div>
+
+        <div id="strategySummaryRow" style="display: none; border-top: 2px solid var(--border); padding-top: 1rem; margin-top: 1.5rem;">
+          <div style="font-weight: bold; margin-bottom: 0.3rem;">PRIMARY STRATEGY: <span id="summaryName">--</span></div>
+          <div style="font-size: 0.85rem; color: #444;">
+            HASH: <span id="summaryHash">--</span> &nbsp;&nbsp; REGIME: <span id="summaryRegime">--</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span>SYSTEMATIC LITERATURE VALIDATOR</span>
+          <span id="validatorBadge" class="badge">IDLE</span>
+        </div>
+        <div class="score-grid">
+          <div class="score-box">
+            <div style="font-size: 0.75rem; color: #888; margin-bottom: 0.5rem;">SHARPE</div>
+            <div id="valSharpe" style="font-size: 1.8rem; font-weight: bold;">--</div>
+          </div>
+          <div class="score-box">
+            <div style="font-size: 0.75rem; color: #888; margin-bottom: 0.5rem;">DRAWDOWN</div>
+            <div id="valDrawdown" style="font-size: 1.8rem; font-weight: bold;">--</div>
+          </div>
+          <div class="score-box">
+            <div style="font-size: 0.75rem; color: #888; margin-bottom: 0.5rem;">GATE STATUS</div>
+            <div id="valStatus" style="font-size: 1.2rem; font-weight: bold;">PENDING</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="flex-grow: 1;">
+        <div class="panel-header">REAL-TIME LOGS</div>
+        <div id="consoleFeed" class="console">
+          <div class="console-line">Neural mesh active. Ready for GitHub ingestion...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 2rem;">
+      <div class="panel">
+        <div class="panel-header">
+          <span>EQUITY CURVE</span>
+          <span id="equityValue" class="badge">--</span>
+        </div>
+        <div style="height: 350px;">
+          <canvas id="equityChart"></canvas>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span>TENANCY</span>
+          <button class="badge" onclick="resetSetup()" style="cursor:pointer; background:white;">RESET</button>
+        </div>
+        <p id="activeAccountLabel" style="font-size: 1rem; margin-bottom: 1rem;">ID: <span style="font-weight: bold;">--</span></p>
+        <div style="display:flex; align-items:center; gap:0.8rem; font-size:0.9rem; font-weight: bold;">
+          <div id="socketIndicator" style="width:12px; height:12px; border:3px solid #000; background: #fff;"></div>
+          <span id="socketStatus">DISCONNECTED</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">ACTIVE STRATEGIES</div>
+        <div id="strategyList" style="font-size: 0.85rem;">
+          <p style="color: var(--muted);">Loading strategies...</p>
+        </div>
+      </div>
+
+      <div class="panel" style="flex-grow: 1;">
+        <div class="panel-header">PIPELINE STAGES</div>
+        <ul style="font-size: 0.9rem; line-height: 2; padding-left: 1rem; font-weight: 500;">
+          <li>1. GIT INGESTION <span style="color:var(--success)">✓</span></li>
+          <li>2. V8 COMPILATION <span style="color:var(--success)">✓</span></li>
+          <li>3. HISTORICAL SIMULATION <span style="color:var(--success)">✓</span></li>
+          <li>4. POLICY GATE AUDIT <span style="color:var(--success)">✓</span></li>
+          <li>5. ALPACA ROUTING <span style="color:var(--success)">✓</span></li>
+        </ul>
+      </div>
+    </div>
 
   </div>
 
-  <!-- Toast Toast Notification Container -->
-  <div id="toast" class="toast">
-    <span class="toast-icon">✓</span>
-    <span id="toastMsg">Action completed successfully</span>
-  </div>
+  <footer>
+    NIGHTWATCHER V3 // UNIVERSAL EXECUTION RAIL // (C) 2026 QUANT CODE AUTOMATA
+  </footer>
 
   <script>
+    let currentDevKey = "";
     let ws = null;
-    let reconnectTimeout = null;
+    let equityChart = null;
 
-    // UI elements
-    const confidenceInput = document.getElementById("confidence");
-    const confidenceVal = document.getElementById("confidenceVal");
-    const apiKeyField = document.getElementById("apiKeyField");
-    const saveKeyBtn = document.getElementById("saveKeyBtn");
-    const shareLinkBtn = document.getElementById("shareLinkBtn");
-    const signalForm = document.getElementById("signalForm");
-    const consoleFeed = document.getElementById("consoleFeed");
-    const socketIndicator = document.getElementById("socketIndicator");
-    const socketStatus = document.getElementById("socketStatus");
-    const toast = document.getElementById("toast");
-    const toastMsg = document.getElementById("toastMsg");
+    function nextStep(stepId) {
+      document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+      document.getElementById('step-' + stepId).classList.add('active');
+      window.scrollTo(0, 0);
+    }
 
-    // Real-time confidence slider indicator
-    confidenceInput.addEventListener("input", (e) => {
-      confidenceVal.textContent = e.target.value;
-    });
+    function toggleDisclaimerBtn() {
+      document.getElementById('disclaimerBtn').disabled = !document.getElementById('agreeDisclaimer').checked;
+    }
 
-    // Drawer toggler
-    window.toggleDrawer = function(id) {
-      const drawer = document.getElementById(id);
-      const icon = document.getElementById("setupToggleIcon");
-      if (drawer.style.display === "none" || drawer.style.display === "") {
-        drawer.style.display = "flex";
-        icon.textContent = "[-] Collapse";
-      } else {
-        drawer.style.display = "none";
-        icon.textContent = "[+] Expand";
-      }
-    };
+    function validateDevKey() {
+      const key = document.getElementById('devKeyInput').value.trim();
+      if (!key) return alert("Please enter your Developer Key.");
+      currentDevKey = key;
+      localStorage.setItem('nightwatcher_dev_key', key);
+      nextStep('config');
+    }
 
-    // Credentials Form Submission
-    const credentialsForm = document.getElementById("credentialsForm");
-    credentialsForm.addEventListener("submit", async (e) => {
+    function resetSetup() {
+      if (confirm("Reset everything?")) { localStorage.clear(); location.reload(); }
+    }
+
+    document.getElementById('setupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      
-      const key = getStoredKey();
-      if (!key) {
-        showToast("Error: Configure your Developer Key at the top first!", "error");
-        logConsole("Post aborted: Missing API key. Input key at top of portal.", "error");
-        return;
-      }
-      
-      const alpaca_api_key = document.getElementById("alpaca_api_key").value.trim();
-      const alpaca_api_secret = document.getElementById("alpaca_api_secret").value.trim();
-      const alpaca_paper = document.getElementById("alpaca_paper").checked;
-      
-      logConsole("Transmitting encrypted credentials setup...", "info");
+      const alpaca_api_key = document.getElementById('alpaca_api_key').value.trim();
+      const alpaca_api_secret = document.getElementById('alpaca_api_secret').value.trim();
+      const alpaca_paper = document.getElementById('alpaca_paper').checked;
       
       try {
         const res = await fetch("/portal", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            token: key,
-            alpaca_api_key,
-            alpaca_api_secret,
-            alpaca_paper
-          })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: currentDevKey, alpaca_api_key, alpaca_api_secret, alpaca_paper })
         });
         
-        const data = await res.json();
-        if (res.ok) {
-          logConsole("Success: " + data.message, "success");
-          showToast("Credentials Encrypted & Configured!", "success");
-          credentialsForm.reset();
-          toggleDrawer('backendSetupDrawer');
-        } else {
-          logConsole("Error updating credentials: " + data.message, "error");
-          showToast("Failed to update credentials", "error");
-        }
-      } catch (err) {
-        logConsole("Network error during credentials configuration: " + err.message, "error");
-        showToast("Network Error", "error");
-      }
+        if (res.ok) { localStorage.setItem('nightwatcher_setup_done', 'true'); showDashboard(); }
+        else { alert("Error: " + (await res.json()).message); }
+      } catch (err) { alert("Network failure: " + err.message); }
     });
 
-    // Save key, reload stream and inject into code snippets
-    function getStoredKey() {
-      return localStorage.getItem("signal_api_key") || "";
-    }
-
-    function saveKey(key) {
-      localStorage.setItem("signal_api_key", key);
-      updateCodeSnippets(key);
-      logConsole(\`API key configured and saved in browser storage. Length: \${key.length} characters.\`, "info");
+    function showDashboard() {
+      document.getElementById('onboarding').style.display = 'none';
+      document.getElementById('dashboard').classList.add('active');
+      document.getElementById('activeAccountLabel').querySelector('span').textContent = currentDevKey;
       connectWebSocket();
+      initEquityChart();
+      updateEquityCurve();
+      updateStrategyList();
+      setInterval(updateEquityCurve, 30000);
+      setInterval(updateStrategyList, 60000);
     }
 
-    function updateCodeSnippets(key) {
-      const displayKey = key || "&lt;API_KEY&gt;";
-      document.querySelectorAll(".key-placeholder").forEach(el => {
-        el.innerHTML = displayKey;
-      });
-    }
-
-    // Connect WS stream
-    function connectWebSocket() {
-      if (ws) {
-        ws.close();
-      }
-      clearTimeout(reconnectTimeout);
-
-      const key = getStoredKey();
-      if (!key) {
-        logConsole("Stream offline: no API key loaded. Enter your key at the top to connect.", "warning");
-        setSocketUI(false, "API KEY MISSING");
-        return;
-      }
-
-      setSocketUI(false, "CONNECTING...");
-      
-      const wsUrl = \`\${location.protocol === "https:" ? "wss" : "ws"}://\${location.host}/stream\`;
-      logConsole(\`Initiating WebSocket connection to stream: \${wsUrl}\`, "info");
-
+    async function updateStrategyList() {
       try {
-        // Cloudflare socket with Bearer key
-        // Since standard web browsers do not support sending headers with a standard WebSocket connection directly,
-        // we can authenticate by passing the token or doing a subprotocol handshake, but wait:
-        // Our Workers handler.ts checks:
-        // const auth = request.headers.get("Authorization");
-        // Browsers CANNOT send HTTP headers during a new WebSocket constructor.
-        // Wait! How does a browser connect to our /stream WebSocket if they can't send headers?
-        // Ah! In handler.ts:
-        // if (env.SIGNAL_API_KEY) {
-        //   const auth = request.headers.get("Authorization");
-        //   ...
-        // }
-        // To allow web browser clients to authenticate over WebSocket without custom headers,
-        // let's explain or handle it gracefully, or allow query-based or ticket-based,
-        // but wait! Since our server checks headers, wait, does the browser fail headers? Yes!
-        // To bypass this or explain, we can notify the user.
-        // Actually! Standard WebSocket protocol allows specifying a Subprotocol.
-        // Or we can let them know that WebSocket auth is primarily for programmatic Python clients
-        // (which DO send headers), and they can use the REST portal form to submit signals!
-        // Wait, let's look at handler.ts again: it strictly requires the header.
-        // Let's print a warning in the portal feed explaining this, but try to open the socket
-        // so programmatic clients can see the logs, or try connecting.
-        
-        ws = new WebSocket(wsUrl);
+        const res = await fetch("/api/strategies/list", {
+          headers: { "Authorization": \`Bearer \${currentDevKey}\` }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const container = document.getElementById('strategyList');
+        if (data.strategies && data.strategies.length > 0) {
+          container.innerHTML = data.strategies.map(s => \`
+            <div style="padding: 0.8rem; border: 1px solid #eee; margin-bottom: 0.8rem;">
+              <div style="font-weight: bold; margin-bottom: 0.3rem;">\${s.name.toUpperCase()}</div>
+              <div style="font-size: 0.75rem; color: #666; margin-bottom: 0.5rem; word-break: break-all;">\${s.github_url}</div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="badge" style="background: #000; color: #fff; font-size: 0.7rem;">SHARPE: \${s.last_backtest_sharpe?.toFixed(2) || 'N/A'}</span>
+                <span style="font-size: 0.7rem; color: #10b981; font-weight: bold;">\${s.status.toUpperCase()}</span>
+              </div>
+            </div>
+          \`).join('');
+        } else {
+          container.innerHTML = '<p style="color: var(--muted);">No active strategies deployed.</p>';
+        }
+      } catch (err) { console.error("Strategy list fail:", err); }
+    }
 
+    function logConsole(message, type = "") {
+      const feed = document.getElementById('consoleFeed');
+      const line = document.createElement('div');
+      line.className = 'console-line';
+      const time = new Date().toTimeString().split(' ')[0];
+      line.textContent = \`[\${time}] \${message}\`;
+      if (type === "success") line.style.color = "#0f0";
+      if (type === "error") line.style.color = "#f00";
+      feed.appendChild(line);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function connectWebSocket() {
+      if (ws) ws.close();
+      const wsUrl = \`\${location.protocol === "https:" ? "wss" : "ws"}://\${location.host}/stream?key=\${encodeURIComponent(currentDevKey)}\`;
+      try {
+        ws = new WebSocket(wsUrl);
         ws.onopen = () => {
-          logConsole("WebSocket connection open. Subscribing to system stream...", "success");
-          setSocketUI(true, "CONNECTED");
-          // Send subscribe packet
+          logConsole("WebSocket rail connected.", "success");
+          document.getElementById('socketStatus').textContent = "RAIL ACTIVE";
+          document.getElementById('socketIndicator').style.background = "#0f0";
           ws.send(JSON.stringify({ type: "subscribe", symbols: ["*"] }));
         };
-
-        ws.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            logConsole(\`[INBOUND] \${event.data}\`, "success");
-          } catch {
-            logConsole(\`[RAW MSG] \${event.data}\`, "info");
-          }
-        };
-
-        ws.onerror = () => {
-          logConsole("WebSocket error. This is likely because browser WebSocket connections cannot send custom HTTP Authorization headers. Rest assured, your Python and Go workers can authenticate over WS!", "warning");
-          setSocketUI(false, "WS HEADER LIMIT");
-        };
-
+        ws.onmessage = (e) => logConsole("INBOUND: " + e.data);
+        ws.onerror = () => logConsole("WebSocket rail failure.", "error");
         ws.onclose = () => {
-          setSocketUI(false, "DISCONNECTED");
+          document.getElementById('socketStatus').textContent = "RAIL OFFLINE";
+          document.getElementById('socketIndicator').style.background = "#fff";
         };
-
-      } catch (err) {
-        logConsole(\`WebSocket init failure: \${err.message}\`, "error");
-        setSocketUI(false, "ERROR");
-      }
+      } catch (err) { logConsole("Rail Init Fail: " + err.message, "error"); }
     }
 
-    function setSocketUI(connected, text) {
-      if (connected) {
-        socketIndicator.style.background = "var(--success)";
-        socketIndicator.style.boxShadow = "0 0 8px var(--success)";
-      } else {
-        socketIndicator.style.background = text.includes("LIMIT") ? "var(--warning)" : "var(--error)";
-        socketIndicator.style.boxShadow = text.includes("LIMIT") ? "0 0 8px var(--warning)" : "0 0 8px var(--error)";
-      }
-      socketStatus.textContent = text;
+    function initEquityChart() {
+      const ctx = document.getElementById('equityChart').getContext('2d');
+      equityChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Equity', data: [], borderColor: '#000', borderWidth: 4, tension: 0, fill: false, pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: { grid: { color: '#ddd', lineWidth: 1 }, ticks: { font: { family: 'JetBrains Mono', weight: 'bold' } } }
+          }
+        }
+      });
     }
 
-    // Logger
-    function logConsole(message, type = "info") {
-      const line = document.createElement("div");
-      line.className = \`console-line console-\${type}\`;
-      
-      const timeSpan = document.createElement("span");
-      timeSpan.className = "console-time";
-      const now = new Date();
-      timeSpan.textContent = \`[\${now.toTimeString().split(" ")[0]}]\`;
-      
-      const msgSpan = document.createElement("span");
-      msgSpan.className = "console-msg";
-      msgSpan.textContent = message;
-      
-      line.appendChild(timeSpan);
-      line.appendChild(msgSpan);
-      consoleFeed.appendChild(line);
-      
-      consoleFeed.scrollTop = consoleFeed.scrollHeight;
+    async function updateEquityCurve() {
+      try {
+        const res = await fetch("/api/portfolio-history?period=1D&timeframe=5Min", {
+          headers: { "Authorization": \`Bearer \${currentDevKey}\` }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data || !data.equity) return;
+        document.getElementById('equityValue').textContent = '$' + data.equity[data.equity.length - 1].toLocaleString();
+        equityChart.data.labels = data.timestamp.map(ts => "");
+        equityChart.data.datasets[0].data = data.equity;
+        equityChart.update();
+      } catch (err) {}
     }
 
-    // Form Submission
-    signalForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      
-      const key = getStoredKey();
-      if (!key) {
-        showToast("Error: Configure your API key before sending!", "error");
-        logConsole("Post aborted: Missing API key. Input key at top of portal.", "error");
+    function updateRepoLog(logs) {
+      const area = document.getElementById('repoLogArea');
+      if (logs.length === 0) {
+        area.innerHTML = '<div style="color: #888;">-- NO ACTIVE REPO TASK --<br>// waiting for github url</div>';
         return;
       }
+      area.innerHTML = logs.map(l => \`
+        <div style="margin-bottom: 0.2rem; white-space: pre-wrap;">
+          <span style="color: #888; margin-right: 1rem;">\${l.time}</span>
+          <span style="font-weight: bold; margin-right: 1rem; display: inline-block; min-width: 120px;">\${l.phase}</span>
+          <span>\${l.message}</span>
+        </div>
+      \`).join('');
+      area.scrollTop = area.scrollHeight;
+    }
 
-      const symbol = document.getElementById("symbol").value.trim().toUpperCase();
-      const asset_class = document.getElementById("asset_class").value;
-      const direction = document.getElementById("direction").value;
-      const urgency = document.getElementById("urgency").value;
-      const confidence = parseFloat(confidenceInput.value);
-      const horizon = parseInt(document.getElementById("horizon").value, 10);
-      const source = document.getElementById("source").value;
-      const rationale = document.getElementById("rationale").value.trim();
+    let currentTaskId = null;
+    let pollInterval = null;
 
-      logConsole(\`Transmitting \${direction.toUpperCase()} signal for \${symbol} via REST...\`, "info");
+    async function pollRepoStatus() {
+      if (!currentTaskId) return;
+      try {
+        const res = await fetch(\`/alpha-socket/repo/status?task_id=\${currentTaskId}\`);
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        if (data.logs) updateRepoLog(data.logs);
+        
+        if (data.status === "success" && data.current_phase === "TASK_DONE") {
+          clearInterval(pollInterval);
+          document.getElementById('repoStatusBadge').textContent = "STATUS: READY";
+          if (data.strategy) {
+            document.getElementById('strategySummaryRow').style.display = 'block';
+            document.getElementById('summaryName').textContent = data.strategy.name;
+            document.getElementById('summaryHash').textContent = (data.strategy_hash || "").slice(0, 8);
+            document.getElementById('summaryRegime').textContent = data.strategy.regime_profile;
+          }
+        } else if (data.status === "error") {
+          clearInterval(pollInterval);
+          document.getElementById('repoStatusBadge').textContent = "STATUS: BLOCKED";
+        }
+      } catch (err) { console.error("Poll fail:", err); }
+    }
+
+    document.getElementById('analyzeBtn').addEventListener('click', async () => {
+      const githubUrl = document.getElementById('githubUrl').value.trim();
+      if (!githubUrl) return alert("Please enter a GitHub URL.");
+      
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      const githubInput = document.getElementById('githubUrl');
+      
+      analyzeBtn.disabled = true;
+      githubInput.disabled = true;
+      document.getElementById('repoStatusBadge').textContent = "STATUS: RUN";
+      
+      const now = new Date().toTimeString().split(' ')[0];
+      updateRepoLog([{ time: now, phase: "TASK_START", message: \`Initiating ingestion for \${githubUrl}...\` }]);
 
       try {
-        const res = await fetch("/api/signal", {
+        const res = await fetch("/alpha-socket/repo", {
           method: "POST",
-          headers: {
-            "Authorization": \`Bearer \${key}\`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            source,
-            symbol,
-            asset_class,
-            direction,
-            confidence,
-            urgency,
-            horizon,
-            rationale
-          })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ repo_url: githubUrl })
         });
-
         const data = await res.json();
-
-        if (res.ok) {
-          logConsole(\`Success! Signal accepted by NightWatcher D1. Signal ID: \${data.signal_id}. Expires in \${data.expires_in_seconds}s.\`, "success");
-          showToast(\`Signal \${symbol} Transmitted!\`, "success");
-          signalForm.reset();
-          confidenceInput.value = 0.75;
-          confidenceVal.textContent = "0.75";
+        
+        if (res.ok && data.status === "success") {
+          currentTaskId = data.task_id;
+          updateRepoLog(data.log);
+          
+          if (data.strategy && data.strategy.name !== "Pending Analysis") {
+            document.getElementById('repoStatusBadge').textContent = "STATUS: READY";
+            document.getElementById('strategySummaryRow').style.display = 'block';
+            document.getElementById('summaryName').textContent = data.strategy.name;
+            document.getElementById('summaryHash').textContent = data.strategy.hash;
+            document.getElementById('summaryRegime').textContent = data.strategy.regime;
+          } else {
+            pollInterval = setInterval(pollRepoStatus, 1500);
+          }
         } else {
-          logConsole(\`API Rejected Signal [\${data.error}]: \${data.message || JSON.stringify(data.fields)}\`, "error");
-          showToast(\`Transmission Failed: \${data.error}\`, "error");
+          document.getElementById('repoStatusBadge').textContent = "STATUS: BLOCKED";
+          updateRepoLog([{ time: now, phase: "ERROR", message: data.message || "Unknown error" }]);
         }
       } catch (err) {
-        logConsole(\`REST transmission network failure: \${err.message}\`, "error");
-        showToast("Network Error", "error");
+        document.getElementById('repoStatusBadge').textContent = "STATUS: BLOCKED";
+        updateRepoLog([{ time: now, phase: "NETWORK_FAIL", message: err.message }]);
+      } finally {
+        analyzeBtn.disabled = false;
+        githubInput.disabled = false;
       }
     });
 
-    // Copying codes
-    function copyCode(elementId) {
-      const codeText = document.getElementById(elementId).innerText;
-      navigator.clipboard.writeText(codeText).then(() => {
-        showToast("Copied to clipboard!", "success");
-      }).catch(err => {
-        showToast("Failed to copy", "error");
-      });
-    }
-
-    // Tabs switching
-    function switchTab(tabId) {
-      document.querySelectorAll(".tab-btn").forEach(btn => {
-        btn.classList.remove("active");
-      });
-      document.querySelectorAll(".tab-content").forEach(content => {
-        content.classList.remove("active");
-      });
-
-      // Find matching button based on text
-      const btn = Array.from(document.querySelectorAll(".tab-btn")).find(b => b.textContent.toLowerCase() === tabId.replace("python-ws", "py-ws").toLowerCase());
-      if (btn) btn.classList.add("active");
-      
-      const tab = document.getElementById(\`\${tabId}-tab\`);
-      if (tab) tab.classList.add("active");
-    }
-
-    // Key management triggers
-    saveKeyBtn.addEventListener("click", () => {
-      const val = apiKeyField.value.trim();
-      saveKey(val);
-      apiKeyField.value = "";
-      showToast("Key Configured!", "success");
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      document.getElementById('githubUrl').value = "";
+      document.getElementById('repoStatusBadge').textContent = "STATUS: IDLE";
+      document.getElementById('strategySummaryRow').style.display = 'none';
+      updateRepoLog([]);
+      if (pollInterval) clearInterval(pollInterval);
+      currentTaskId = null;
     });
 
-    shareLinkBtn.addEventListener("click", () => {
-      const key = getStoredKey();
-      const shareUrl = \`\${location.protocol}//\${location.host}/portal\${key ? '?key=' + encodeURIComponent(key) : ''}\`;
-      navigator.clipboard.writeText(shareUrl).then(() => {
-        showToast("Shareable link copied!", "success");
-      });
-    });
-
-    // Toast UI
-    function showToast(message, type = "success") {
-      toast.className = \`toast show toast-\${type}\`;
-      toast.querySelector(".toast-icon").textContent = type === "success" ? "✓" : "✗";
-      toastMsg.textContent = message;
-      
-      setTimeout(() => {
-        toast.classList.remove("show");
-      }, 3000);
-    }
-
-    // App Initialization
     window.addEventListener("DOMContentLoaded", () => {
-      // 1. Capture key from URL if passed
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlKey = urlParams.get("key");
-      if (urlKey) {
-        saveKey(urlKey);
-        // Strip the key from URL to prevent exposure in browser address bar
-        window.history.replaceState({}, document.title, window.location.pathname);
-      } else {
-        const storedKey = getStoredKey();
-        if (storedKey) {
-          updateCodeSnippets(storedKey);
-          logConsole("Loaded stored API key from local storage.", "info");
-          connectWebSocket();
-        } else {
-          updateCodeSnippets("");
-        }
+      const storedKey = localStorage.getItem('nightwatcher_dev_key');
+      const setupDone = localStorage.getItem('nightwatcher_setup_done');
+      if (storedKey) {
+        currentDevKey = storedKey;
+        document.getElementById('devKeyInput').value = storedKey;
+        if (setupDone) showDashboard();
+        else nextStep('config');
       }
     });
-
   </script>
 </body>
 </html>`;

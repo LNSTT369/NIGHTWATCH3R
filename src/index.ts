@@ -5,9 +5,16 @@ import { handleCronEvent } from "./jobs/cron";
 import { handleStreamConnection } from "./stream/handler";
 import { handleSignalPost, handleSignalGet } from "./api/signal";
 import { handlePortalGet } from "./api/portal";
-import { handleStrategyDeploy } from "./api/deploy";
+import { handleStrategyDeploy, handleStrategyList } from "./api/deploy";
+import { handlePortfolioHistory } from "./api/portfolio";
+import { handleRepoIngest, handleRepoStatus, handleRepoHistory } from "./api/repo";
+import { processCodifyQueue, CodifyMessage } from "./codification/consumer";
+import { processMCQueue, MCJob } from "./execution/mc_worker";
 
 export { SessionDO } from "./durable-objects/session";
+export { ReconciliationDO } from "./durable-objects/reconciliation";
+export { CodifyJobDO } from "./durable-objects/CodifyJobDO";
+export { SigningDO } from "./durable-objects/SigningDO";
 export { NightwatcherMcpAgent, QuantxMcpAgent };
 
 export default {
@@ -43,12 +50,29 @@ export default {
             portal: "/portal",
             signal: "/api/signal",
             deploy: "/api/signal/deploy",
+            alphaSocket: {
+              ingest: "/alpha-socket/repo",
+              status: "/alpha-socket/repo/status",
+              history: "/alpha-socket/repo/history"
+            }
           },
         }),
         {
           headers: { "Content-Type": "application/json" },
         }
       );
+    }
+
+    if (url.pathname === "/alpha-socket/repo") {
+      return handleRepoIngest(request, env, ctx);
+    }
+
+    if (url.pathname === "/alpha-socket/repo/status") {
+      return handleRepoStatus(request, env);
+    }
+
+    if (url.pathname === "/alpha-socket/repo/history") {
+      return handleRepoHistory(request, env);
     }
 
     if (url.pathname.startsWith("/mcp")) {
@@ -67,8 +91,22 @@ export default {
       return handlePortalGet(request, env);
     }
 
+    if (url.pathname === "/api/portfolio-history") {
+      return handlePortfolioHistory(request, env);
+    }
+
+    if (url.pathname.startsWith("/reconcile")) {
+      const id = env.RECONCILIATION.idFromName("global");
+      const stub = env.RECONCILIATION.get(id);
+      return stub.fetch(request);
+    }
+
     if (url.pathname === "/api/signal/deploy") {
       return handleStrategyDeploy(request, env);
+    }
+
+    if (url.pathname === "/api/strategies/list") {
+      return handleStrategyList(request, env);
     }
 
     if (url.pathname === "/api/signal" && request.method === "POST") {
@@ -93,6 +131,17 @@ export default {
     }
 
     return new Response("Not found", { status: 404 });
+  },
+
+  async queue(
+    batch: MessageBatch<any>,
+    env: Env
+  ): Promise<void> {
+    if (batch.queue === "codify-jobs") {
+      await processCodifyQueue(batch, env);
+    } else if (batch.queue === "mc-jobs") {
+      await processMCQueue(batch, env);
+    }
   },
 
   async scheduled(
