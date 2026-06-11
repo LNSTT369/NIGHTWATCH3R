@@ -74,10 +74,10 @@ import {
 import { calcSlippageMetrics } from "../execution/quality";
 import { routeOrder } from "../execution/sor";
 
-export class NightwatcherMcpAgent extends McpAgent<Env> {
+export class ValkyrieMcpAgent extends McpAgent<Env> {
   // @ts-ignore
   server = new McpServer({
-    name: "nightwatcher",
+    name: "valkyrie",
     version: "0.1.0",
   });
 

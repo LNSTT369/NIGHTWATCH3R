@@ -1,5 +1,5 @@
 import type { Env } from "./env.d";
-import { NightwatcherMcpAgent } from "./mcp/agent";
+import { ValkyrieMcpAgent } from "./mcp/agent";
 import { QuantxMcpAgent } from "./mcp/quantx";
 import { handleCronEvent } from "./jobs/cron";
 import { handleStreamConnection } from "./stream/handler";
@@ -8,14 +8,16 @@ import { handlePortalGet } from "./api/portal";
 import { handleStrategyDeploy, handleStrategyList } from "./api/deploy";
 import { handlePortfolioHistory } from "./api/portfolio";
 import { handleRepoIngest, handleRepoStatus, handleRepoHistory } from "./api/repo";
-import { processCodifyQueue, CodifyMessage } from "./codification/consumer";
-import { processMCQueue, MCJob } from "./execution/mc_worker";
+import { handleKillSwitch } from "./api/killswitch";
+import { processCodifyQueue } from "./codification/consumer";
+import { processMCQueue } from "./execution/mc_worker";
+import { handleV3Regime, handleV3Risk, handleV3Signals, handleV3Config, handleV3Status, handleV3Strategies, handleSetupKeys, handleV3Logs, handleV3Sentiment } from "./api/v3_dashboard";
 
 export { SessionDO } from "./durable-objects/session";
 export { ReconciliationDO } from "./durable-objects/reconciliation";
 export { CodifyJobDO } from "./durable-objects/CodifyJobDO";
 export { SigningDO } from "./durable-objects/SigningDO";
-export { NightwatcherMcpAgent, QuantxMcpAgent };
+export { ValkyrieMcpAgent, QuantxMcpAgent };
 
 export default {
   async fetch(
@@ -42,8 +44,8 @@ export default {
       return new Response(
         JSON.stringify({
           name: "nightwatcher",
-          version: "0.1.0",
-          description: "Cloudflare Workers MCP server for autonomous stock trading",
+          version: "0.1.1",
+          description: "Cloudflare Workers MCP server for autonomous stock trading (v3.1)",
           endpoints: {
             health: "/health",
             mcp: "/mcp (via Durable Object)",
@@ -63,6 +65,53 @@ export default {
       );
     }
 
+    if (url.pathname === "/api/v3/regime") {
+      return handleV3Regime(request, env);
+    }
+
+    if (url.pathname === "/api/v3/risk") {
+      return handleV3Risk(request, env);
+    }
+
+    if (url.pathname === "/api/v3/signals") {
+      return handleV3Signals(request, env);
+    }
+
+    if (url.pathname === "/api/v3/config") {
+      return handleV3Config(request, env);
+    }
+
+    if (url.pathname === "/api/v3/status") {
+      return handleV3Status(request, env);
+    }
+
+    if (url.pathname === "/api/setup/keys") {
+      return handleSetupKeys(request, env);
+    }
+
+    if (url.pathname === "/api/v3/strategies") {
+      return handleV3Strategies(request, env);
+    }
+
+    if (url.pathname === "/api/v3/logs") {
+      return handleV3Logs(request, env);
+    }
+
+    if (url.pathname === "/api/v3/sentiment") {
+      return handleV3Sentiment(request, env);
+    }
+
+    if (url.pathname === "/api/sys/activate" && request.method === "POST") {
+      ctx.waitUntil(handleCronEvent("manual", env));
+      return new Response(JSON.stringify({ 
+        status: "activated", 
+        timestamp: new Date().toISOString(),
+        message: "Manual activation pulse sent to execution bridge."
+      }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
     if (url.pathname === "/alpha-socket/repo") {
       return handleRepoIngest(request, env, ctx);
     }
@@ -76,7 +125,7 @@ export default {
     }
 
     if (url.pathname.startsWith("/mcp")) {
-      return NightwatcherMcpAgent.mount("/mcp", { binding: "MCP_AGENT" }).fetch(request, env, ctx);
+      return ValkyrieMcpAgent.mount("/mcp", { binding: "MCP_AGENT" }).fetch(request, env, ctx);
     }
 
     if (url.pathname.startsWith("/quantx")) {
@@ -109,6 +158,10 @@ export default {
       return handleStrategyList(request, env);
     }
 
+    if (url.pathname === "/api/killswitch" && request.method === "POST") {
+      return handleKillSwitch(request, env);
+    }
+
     if (url.pathname === "/api/signal" && request.method === "POST") {
       return handleSignalPost(request, env);
     }
@@ -130,7 +183,8 @@ export default {
       });
     }
 
-    return new Response("Not found", { status: 404 });
+    // Fallback to static assets
+    return env.ASSETS.fetch(request);
   },
 
   async queue(
@@ -154,4 +208,3 @@ export default {
     ctx.waitUntil(handleCronEvent(cronId, env));
   },
 };
-// reload

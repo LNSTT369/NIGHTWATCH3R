@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="./src/portal_assets/hero.svg" alt="NIGHTWATCH3R Hero" width="100%">
+  <img src="./src/portal_assets/hero.svg" alt="VALKYRIE Hero" width="100%">
 
-  # NIGHTWATCH3R
+  # VALKYRIE
 
   **Zero-Trust Execution Rail & Algorithmic PolicyGate for Quantitative Finance.**
 
@@ -16,7 +16,7 @@
 
 Most trading bots are trust-fund software: they generate signals, assume the signals are right, and wire them straight to an exchange. One hallucination, one regime shift, one dead API call — and you're holding a bag of losses with no audit trail.
 
-**NIGHTWATCH3R inverts that stack.** Every trade signal must pass through a deterministic, cryptographic PolicyGate before it ever touches Alpaca. No signal reaches the execution broker without a verifiable trust chain. HMAC-signed approval tokens. Real-time position sizing via Kelly Criterion. Volatility-aware regime detection. If the policy rejects it, the order never ships. That's the whole point.
+**VALKYRIE inverts that stack.** Every trade signal must pass through a deterministic, cryptographic PolicyGate before it ever touches Alpaca. No signal reaches the execution broker without a verifiable trust chain. HMAC-signed approval tokens. Real-time position sizing via Kelly Criterion. Volatility-aware regime detection. If the policy rejects it, the order never ships. That's the whole point.
 
 > *Built on Cloudflare Workers. Secured by Durable Objects. Executed through Alpaca.*
 > *Zero marginal cost per trade. Zero blind trust, either.*
@@ -26,8 +26,8 @@ Most trading bots are trust-fund software: they generate signals, assume the sig
 ## Quick Start — 3 Steps, Paper Trading
 
 ```bash
-git clone https://github.com/LNSTT369/NIGHTWATCH3R.git
-cd NIGHTWATCH3R
+git clone https://github.com/LNSTT369/VALKYRIE.git
+cd VALKYRIE
 
 ./start.sh
 # → Auto-installs dependencies (if missing)
@@ -75,7 +75,7 @@ A unified ingestion API that accepts signals from any source: MCP agent, webhook
 
 ### Reconciler (Audit Trail)
 
-A 60-second cron-driven Durable Object that aligns broker state with internal state. Checks Alpaca's position data against what NIGHTWATCH3R thinks is open. Logs discrepancies. Acts as the single source of truth for any trade audit.
+A 60-second cron-driven Durable Object that aligns broker state with internal state. Checks Alpaca's position data against what VALKYRIE thinks is open. Logs discrepancies. Acts as the single source of truth for any trade audit.
 
 ---
 
